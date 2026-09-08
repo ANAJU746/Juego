@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;800&display=swap');
+
+:root {
+    --azul-principal: #42a5f5;
+    --azul-oscuro: #1e88e5;
+    --blanco: #ffffff;
+    --texto: #2c3e50;
+    --verde-correcto: #4caf50;
+    --rojo-incorrecto: #ef5350;
+}
+
+body {
+    /* La ruta asume que el CSS está en la carpeta "css" y la imagen en "img" */
+    background-image: url('../img/fondo.jpg'); 
+    background-color: #85c1e9; /* Color de respaldo parecido al de tu imagen */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    
+    color: var(--texto);
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Diseño tipo Tarjeta Elegante (Flashcard) */
+.contenedor {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    padding: 50px 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    width: 90%;
+    max-width: 420px;
+    position: relative;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Barra de progreso minimalista (Línea delgada) */
+.barra-progreso {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+}
+
+.relleno-progreso {
+    height: 100%;
+    background-color: var(--azul-principal);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.etiqueta {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #6a8296;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.palabra-objetivo {
+    font-size: 2.8rem;
+    color: var(--azul-oscuro);
+    margin: 0 0 40px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Botones más sutiles y planos */
+.boton-opcion {
+    display: block;
+    padding: 16px;
+    border: 1px solid rgba(66, 165, 245, 0.3);
+    border-radius: 12px;
+    color: var(--texto);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.6);
+    transition: all 0.2s ease;
+}
+
+.boton-opcion:hover:not(.deshabilitado) {
+    background: var(--blanco);
+    border-color: var(--azul-principal);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(66, 165, 245, 0.15);
+}
+
+.boton-opcion.deshabilitado {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.boton-opcion.opcion-correcta {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: var(--verde-correcto);
+    color: var(--verde-correcto);
+}
+
+.boton-opcion.opcion-incorrecta {
+    background: rgba(239, 83, 80, 0.1);
+    border-color: var(--rojo-incorrecto);
+    color: var(--rojo-incorrecto);
+}
+
+.feedback {
+    margin-top: 30px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.feedback.correcto { color: var(--verde-correcto); }
+.feedback.incorrecto { color: var(--rojo-incorrecto); }
+
+.boton-accion {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 14px 40px;
+    color: var(--blanco);
+    text-decoration: none;
+    border-radius: 30px; /* Botón tipo píldora */
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    background-color: var(--azul-oscuro);
+}
+
+.boton-accion:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.boton-accion.verde { background-color: var(--verde-correcto); }
+.boton-accion.rojo { background-color: var(--rojo-incorrecto); }
+
+/* Clases para el Confeti generado por JavaScript */
+.confeti-pedazo {
+    position: fixed;
+    top: -10px;
+    z-index: 9999;
+    animation: caer linear forwards;
+}
+.mascota-container {
+    position: fixed;
+    bottom: -10px; /* Un poco por debajo para que parezca que sale del borde */
+    left: 20px;
+    width: 280px; /* Tamaño de la mascota */
+    z-index: 1000;
+    pointer-events: none; /* Evita que estorbe si el usuario intenta hacer clic cerca */
+    animation: asomarse 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mascota-media {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+@keyframes asomarse {
+    from { transform: translateY(100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Hacerla más pequeña en celulares para que no tape el juego */
+@media (max-width: 768px) {
+    .mascota-container {
+        width: 150px;
+        left: 10px;
+        bottom: -5px;
+    }
+}
+
+@keyframes caer {
+    to { transform: translateY(100vh) rotate(720deg); }
+}
