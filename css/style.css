@@ -202,3 +202,37 @@ body {
 @keyframes caer {
     to { transform: translateY(100vh) rotate(720deg); }
 }
+
+.header-usuario {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(66, 165, 245, 0.15);
+    margin-top: 15px;
+}
+
+.nombre-jugador {
+    font-weight: 800;
+    color: var(--azul-oscuro);
+    font-size: 1.1rem;
+}
+
+.btn-salir {
+    font-size: 0.85rem;
+    color: var(--rojo-incorrecto);
+    text-decoration: none;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 10px;
+    background: rgba(239, 83, 80, 0.1);
+    transition: all 0.2s ease;
+}
+
+.btn-salir:hover {
+    background: var(--rojo-incorrecto);
+    color: var(--blanco);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(239, 83, 80, 0.2);
+}
