@@ -80,6 +80,8 @@
                         <option value="1">🎣 Pesca Técnica</option>
                         <option value="2">🔨 Caza Conceptos</option>
                         <option value="3">🎯 Tiro al Blanco</option>
+                        <option value="4">🎈 Atrapar Globos</option>
+                        <option value="5">🏢 Torre de Conceptos</option>
                     </select>
                     <button type="submit" name="lanzar_juego" class="btn btn-lanzar">▶️ Lanzar Actividad</button>
                 </form>
@@ -126,7 +128,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE ACTUALIZACIÓN EN TIEMPO REAL -->
+    
     <script>
         function actualizarRankingEnVivo() {
             // Llamamos a nuestro controlador pasándole el parámetro api=ranking

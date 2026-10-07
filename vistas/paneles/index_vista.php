@@ -171,6 +171,16 @@
                 <h2>Tiro al Blanco</h2>
                 <p>Memoriza las posiciones y dispárale a la correcta.</p>
             </a>
+            <a href="juego4.php" class="tarjeta-juego">
+                <div style="font-size: 4rem;">🎈</div>
+                <h2>Atrapar Globos</h2>
+                <p>Revienta el globo con la respuesta correcta antes de que escape.</p>
+            </a>
+            <a href="juego5.php" class="tarjeta-juego">
+                <div style="font-size: 4rem;">🏢</div>
+                <h2>Torre de Conceptos</h2>
+                <p>Apila la respuesta correcta sin tirar la torre</p>
+            </a>
         </div>
     </div>
 

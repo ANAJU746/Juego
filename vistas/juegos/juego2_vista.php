@@ -317,5 +317,86 @@
             }, { once: true }); // El "once: true" hace que este evento solo se dispare la primera vez
         });
     </script>
+    <style>
+        .btn-salir-juego { position: fixed; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); color: #ef5350; border: 2px solid #ef5350; padding: 10px 20px; border-radius: 15px; font-weight: 900; font-family: 'Nunito', sans-serif; font-size: 1.1rem; cursor: pointer; z-index: 9000; box-shadow: 0 5px 15px rgba(239, 83, 80, 0.15); transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-salir-juego:hover { background: #ef5350; color: white; transform: scale(1.05); }
+        .modal-pausa { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(200, 220, 240, 0.5); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 10000; font-family: 'Nunito', sans-serif; text-align: center; }
+        .modal-contenido-pausa { background: rgba(255, 255, 255, 0.95); padding: 40px 50px; border-radius: 24px; border: 2px solid #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.15); max-width: 450px; width: 90%; }
+        .modal-contenido-pausa h2 { font-size: 2rem; color: #ef5350; margin-top: 0; font-weight: 900; }
+        .texto-advertencia { font-size: 1.1rem; color: #6a8296; font-weight: 700; }
+        .modal-botones { margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
+        .modal-botones button { padding: 12px 25px; border: none; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; font-family: 'Nunito', sans-serif; }
+        .modal-botones button:hover { transform: translateY(-3px); }
+        .btn-si { background: #ffebee; color: #d32f2f; border: 2px solid #ffcdd2; box-shadow: 0 5px 15px rgba(211, 47, 47, 0.1); }
+        .btn-no { background: linear-gradient(135deg, #42a5f5, #1e88e5); color: white; box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3); }
+        #contador-pausa { font-size: 6rem; font-weight: 900; color: #66bb6a; display: none; margin: 20px 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+    </style>
+    <button class="btn-salir-juego" onclick="mostrarModalPausa()">✖ Abandonar</button>
+    <div id="modal-pausa" class="modal-pausa">
+        <div class="modal-contenido-pausa">
+            <h2 id="titulo-pausa">¿Seguro que deseas salir?</h2>
+            <p id="texto-pausa" class="texto-advertencia">Si sales ahora, tu progreso en esta partida se perderá por completo.</p>
+            <div class="modal-botones" id="botones-pausa">
+                <button class="btn-no" onclick="iniciarConteoPausa()">No, seguir jugando</button>
+                <button class="btn-si" onclick="window.location.href='index.php'">Sí, salir al menú</button>
+            </div>
+            <div id="contador-pausa">3</div>
+        </div>
+    </div>
+    <script>
+        let velOriginalPausa = null;
+        let generadorPausado = false;
+        let intervaloConteoPausa;
+        function mostrarModalPausa() {
+            clearInterval(intervaloConteoPausa);
+            document.getElementById('modal-pausa').style.display = 'flex';
+            document.getElementById('botones-pausa').style.display = 'flex';
+            document.getElementById('texto-pausa').style.display = 'block';
+            document.getElementById('contador-pausa').style.display = 'none';
+            document.getElementById('titulo-pausa').innerText = '¿Seguro que deseas salir?';
+            document.getElementById('titulo-pausa').style.color = '#ef5350';
+            if (typeof velocidad !== 'undefined' && velocidad > 0) { velOriginalPausa = velocidad; velocidad = 0; }
+            if (typeof generadorGlobos !== 'undefined' && generadorGlobos) { clearInterval(generadorGlobos); generadorGlobos = null; generadorPausado = true; }
+            document.getAnimations().forEach(animacion => animacion.pause());
+            const musica = document.getElementById('musica-juego');
+            if (musica) musica.pause();
+        }
+        function iniciarConteoPausa() {
+            document.getElementById('botones-pausa').style.display = 'none';
+            document.getElementById('texto-pausa').style.display = 'none';
+            document.getElementById('titulo-pausa').innerText = 'Reanudando partida en...';
+            document.getElementById('titulo-pausa').style.color = '#1e88e5';
+            const contadorEl = document.getElementById('contador-pausa');
+            contadorEl.style.display = 'block';
+            let conteo = 3;
+            contadorEl.innerText = conteo;
+            contadorEl.style.color = '#66bb6a';
+            clearInterval(intervaloConteoPausa);
+            intervaloConteoPausa = setInterval(() => {
+                conteo--;
+                if (conteo > 0) {
+                    contadorEl.innerText = conteo;
+                    if (conteo === 2) contadorEl.style.color = '#ffca28';
+                    if (conteo === 1) contadorEl.style.color = '#ef5350';
+                    return;
+                }
+                clearInterval(intervaloConteoPausa);
+                document.getElementById('modal-pausa').style.display = 'none';
+                if (velOriginalPausa !== null) { velocidad = velOriginalPausa; velOriginalPausa = null; }
+                if (typeof generadorGlobos !== 'undefined' && generadorPausado) {
+                    generadorGlobos = setInterval(() => {
+                        if (typeof opcionesActuales === 'undefined' || typeof indiceOpcion === 'undefined') return;
+                        if (indiceOpcion >= opcionesActuales.length) { opcionesActuales.sort(() => Math.random() - 0.5); indiceOpcion = 0; }
+                        crearGlobo(opcionesActuales[indiceOpcion]);
+                        indiceOpcion++;
+                    }, 1000);
+                    generadorPausado = false;
+                }
+                document.getAnimations().forEach(animacion => animacion.play());
+                const musica = document.getElementById('musica-juego');
+                if (musica) musica.play().catch(error => console.error('No se pudo reanudar la música:', error));
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
