@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 $error = '';
 $mensaje_exito = '';
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($usuario['rol'] === 'maestro') {
             header("Location: panel_maestro.php");
         } else {
-            header("Location: index.php");
+            header("Location: ../index.php");
         }
         exit;
     } else {
@@ -35,5 +35,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // ESTA LÍNEA ES LA MAGIA: Llama a tu nuevo diseño
-require_once 'vistas/auth/login_vista.php';
+require_once __DIR__ . '/../vistas/auth/login_vista.php';
 ?>

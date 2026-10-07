@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 // --- RECEPTOR OCULTO PARA GUARDAR EL PUNTAJE ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_puntaje'])) {
@@ -57,7 +57,6 @@ if (empty($preguntas)) {
 }
 // --------------------------------------------------------------
 
-require_once 'vistas/juegos/juego2_vista.php';
+require_once __DIR__ . '/../vistas/juegos/juego2_vista.php';
 ?>
 ?>
-

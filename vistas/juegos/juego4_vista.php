@@ -7,7 +7,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
 
-        body { background-image: url('img/fondo.jpg'); background-size: cover; background-position: center; font-family: 'Nunito', sans-serif; margin: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        body { background-image: url('../img/fondo.jpg'); background-size: cover; background-position: center; font-family: 'Nunito', sans-serif; margin: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
 
         .contenedor-juego { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 2px solid #fff; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); width: 95%; max-width: 700px; text-align: center; z-index: 10; position: relative; }
 
@@ -50,17 +50,17 @@
         <h2 style="font-size: 2.5rem; color: #9c27b0;">¡Misión Completada!</h2>
         <p id="mensaje-puntuacion" style="font-weight: 700; color: #6a8296; font-size: 1.2rem;"></p>
         <p id="mensaje-guardado" style="color: #4caf50; font-weight: 800; display: none;">✅ Puntaje guardado exitosamente</p>
-        <a href="index.php" class="boton-accion" style="margin-top: 20px;">Menú Principal</a>
+        <a href="../index.php" class="boton-accion" style="margin-top: 20px;">Menú Principal</a>
     </div>
 </div>
 
 <!-- MASCOTAS -->
 <div style="position: fixed; bottom: -10px; left: 20px; width: 250px; z-index: 1000; pointer-events: none;">
     <video id="vid-espera" autoplay loop muted playsinline style="width: 100%; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.4)); display: block;">
-        <source src="videos/Videoespera.webm" type="video/webm">
+        <source src="../videos/Videoespera.webm" type="video/webm">
     </video>
     <video id="vid-felicitar" muted playsinline style="width: 100%; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.4)); display: none;">
-        <source src="videos/VideoFelicitar.webm" type="video/webm">
+        <source src="../videos/VideoFelicitar.webm" type="video/webm">
     </video>
 </div>
 
@@ -186,7 +186,7 @@
 </script>
 <!-- MÚSICA DE FONDO -->
 <audio id="musica-juego" loop>
-    <source src="musica/muiscafondo.mp3" type="audio/mpeg">
+    <source src="../musica/muiscafondo.mp3" type="audio/mpeg">
 </audio>
 <script>
     const audioFondo = document.getElementById('musica-juego');
@@ -220,7 +220,7 @@
         <p id="texto-pausa" class="texto-advertencia">Si sales ahora, tu progreso en esta partida se perderá por completo.</p>
         <div class="modal-botones" id="botones-pausa">
             <button class="btn-no" onclick="iniciarConteoPausa()">No, seguir jugando</button>
-            <button class="btn-si" onclick="window.location.href='index.php'">Sí, salir al menú</button>
+            <button class="btn-si" onclick="window.location.href='../index.php'">Sí, salir al menú</button>
         </div>
         <div id="contador-pausa">3</div>
     </div>

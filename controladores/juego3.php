@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 // --- RECEPTOR OCULTO PARA GUARDAR EL PUNTAJE ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_puntaje'])) {
@@ -56,6 +56,5 @@ if (empty($preguntas)) {
     die("<h2 style='text-align:center; padding:50px; font-family:sans-serif; color:#ef5350; background:white; border-radius:20px; margin:50px;'>Error: No hay preguntas de categoría 3 en la base de datos. Asegúrate de insertarlas en HeidiSQL.</h2>");
 }
 // --------------------------------------------------------------
-require_once 'vistas/juegos/juego3_vista.php';
+require_once __DIR__ . '/../vistas/juegos/juego3_vista.php';
 ?>
-

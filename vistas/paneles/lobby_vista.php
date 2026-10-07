@@ -21,7 +21,7 @@
     <!-- MÚSICA DE FONDO -->
     <audio id="musica-juego" loop>
         <!-- Fíjate que usamos el nombre exacto de tu captura: muiscafondo.mp3 -->
-        <source src="musica/muiscafondo.mp3" type="audio/mpeg">
+        <source src="../musica/muiscafondo.mp3" type="audio/mpeg">
     </audio>
 
     <!-- SCRIPT PARA CONTROLAR LA MÚSICA -->
