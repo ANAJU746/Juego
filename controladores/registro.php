@@ -1,6 +1,6 @@
 <?php
 // registro.php (Este es el Controlador que va en tu carpeta principal)
-require_once 'config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 $mensaje = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -26,5 +26,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // ESTA LÍNEA ES LA MAGIA: Llama a tu nuevo diseño con Glassmorphism, fondo y Jaguar
-require_once 'vistas/auth/registro_vista.php';
+require_once __DIR__ . '/../vistas/auth/registro_vista.php';
 ?>

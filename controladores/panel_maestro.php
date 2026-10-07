@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 // Validar que sea maestro
 if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'maestro') {
@@ -70,5 +70,5 @@ if (isset($_GET['api']) && $_GET['api'] == 'ranking') {
 }
 
 // Si no es petición API, cargamos la Vista normal
-require_once 'vistas/paneles/panel_maestro_vista.php';
+require_once __DIR__ . '/../vistas/paneles/panel_maestro_vista.php';
 ?>

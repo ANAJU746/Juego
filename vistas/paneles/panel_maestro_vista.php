@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
         
         * { box-sizing: border-box; }
-        body { background-image: url('img/fondo.jpg'); background-size: cover; background-position: center; background-attachment: fixed; font-family: 'Nunito', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        body { background-image: url('../img/fondo.jpg'); background-size: cover; background-position: center; background-attachment: fixed; font-family: 'Nunito', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
 
         .header-maestro { width: 100%; max-width: 1200px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #fff; margin-bottom: 30px; }
         .header-maestro h1 { margin: 0; color: #1e88e5; font-size: 1.8rem; display: flex; align-items: center; gap: 15px; }
@@ -171,7 +171,7 @@
     <!-- MÚSICA DE FONDO -->
     <audio id="musica-juego" loop>
         <!-- Fíjate que usamos el nombre exacto de tu captura: muiscafondo.mp3 -->
-        <source src="musica/muiscafondo.mp3" type="audio/mpeg">
+        <source src="../musica/muiscafondo.mp3" type="audio/mpeg">
     </audio>
 
     <!-- SCRIPT PARA CONTROLAR LA MÚSICA -->

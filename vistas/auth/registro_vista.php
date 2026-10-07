@@ -9,7 +9,7 @@
         
         * { box-sizing: border-box; }
         body { 
-            background-image: url('img/fondo2.jpg'); 
+            background-image: url('../img/fondo2.jpg'); 
             background-size: cover; 
             background-position: center; 
             background-attachment: fixed; 
@@ -116,7 +116,7 @@
     <!-- VIDEO DE LA MASCOTA DE BIENVENIDA A LA DERECHA -->
     <div style="position: fixed; bottom: -10px; right: 20px; width: 280px; z-index: 1000; pointer-events: none;">
         <video autoplay loop muted playsinline style="width: 100%; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.5)); display: block;">
-            <source src="videos/videoespera.webm" type="video/webm">
+            <source src="../videos/videoespera.webm" type="video/webm">
         </video>
     </div>
 
@@ -151,7 +151,7 @@
     <!-- MÚSICA DE FONDO -->
     <audio id="musica-juego" loop>
         <!-- Fíjate que usamos el nombre exacto de tu captura: muiscafondo.mp3 -->
-        <source src="musica/muiscafondo.mp3" type="audio/mpeg">
+        <source src="../musica/muiscafondo.mp3" type="audio/mpeg">
     </audio>
 
     <!-- SCRIPT PARA CONTROLAR LA MÚSICA -->

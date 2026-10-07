@@ -76,7 +76,7 @@
             <div class="foto-perfil">🧑‍💻</div>
             <div>
                 <p class="nombre-usuario"><?php echo htmlspecialchars($nombre_usuario); ?></p>
-                <a href="logout.php" class="btn-logout">Cerrar Sesión</a>
+                <a href="controladores/logout.php" class="btn-logout">Cerrar Sesión</a>
             </div>
         </div>
         <div class="stats-container">
@@ -156,27 +156,27 @@
     <div id="seccion-juegos">
         <button class="btn-cerrar-juegos" id="btn-cerrar-practica">X</button>
         <div class="tarjetas-container">
-            <a href="juego1.php?reiniciar=<?php echo time(); ?>&solo=1" class="tarjeta-juego">
+            <a href="controladores/juego1.php?reiniciar=<?php echo time(); ?>&solo=1" class="tarjeta-juego">
                 <div style="font-size: 4rem;">🎣</div>
                 <h2>Pesca Técnica</h2>
                 <p>Atrapa la respuesta correcta que nada en el río digital.</p>
             </a>
-            <a href="juego2.php?reiniciar=<?php echo time(); ?>&solo=1" class="tarjeta-juego">
+            <a href="controladores/juego2.php?reiniciar=<?php echo time(); ?>&solo=1" class="tarjeta-juego">
                 <div style="font-size: 4rem;">🔨</div>
                 <h2>Caza Conceptos</h2>
                 <p>Martilla la pantalla holográfica antes de que se esconda.</p>
             </a>
-            <a href="juego3.php?reiniciar=<?php echo time(); ?>&solo=1" class="tarjeta-juego">
+            <a href="controladores/juego3.php?reiniciar=<?php echo time(); ?>&solo=1" class="tarjeta-juego">
                 <div style="font-size: 4rem;">🎯</div>
                 <h2>Tiro al Blanco</h2>
                 <p>Memoriza las posiciones y dispárale a la correcta.</p>
             </a>
-            <a href="juego4.php" class="tarjeta-juego">
+            <a href="controladores/juego4.php" class="tarjeta-juego">
                 <div style="font-size: 4rem;">🎈</div>
                 <h2>Atrapar Globos</h2>
                 <p>Revienta el globo con la respuesta correcta antes de que escape.</p>
             </a>
-            <a href="juego5.php" class="tarjeta-juego">
+            <a href="controladores/juego5.php" class="tarjeta-juego">
                 <div style="font-size: 4rem;">🏢</div>
                 <h2>Torre de Conceptos</h2>
                 <p>Apila la respuesta correcta sin tirar la torre</p>

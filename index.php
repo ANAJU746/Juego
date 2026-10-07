@@ -4,7 +4,7 @@ require_once 'config/conexion.php';
 
 // Validar sesión
 if (!isset($_SESSION['id_usuario'])) {
-    header("Location: login.php");
+    header("Location: controladores/login.php");
     exit;
 }
 
@@ -22,7 +22,7 @@ if (isset($_POST['unirse_sala'])) {
     
     if ($sala) {
         $_SESSION['id_sala_activa'] =$sala['id_sala'];
-        header("Location: lobby.php");
+        header("Location: controladores/lobby.php");
         exit;
     } else {
         $error_sala = "El PIN no existe o la sala fue cerrada.";

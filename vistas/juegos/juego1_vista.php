@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesca Técnica - Arcade</title>
-    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/style.css?v=<?php echo time(); ?>">
     <style>
         .contenedor-juego1 {
             background: rgba(255, 255, 255, 0.85);
@@ -91,7 +91,7 @@
         .boton-accion.verde { background: #4caf50; }
     </style>
 </head>
-<body style="background-image: url('img/fondo.jpg'); background-size: cover; background-attachment: fixed;">
+<body style="background-image: url('../img/fondo.jpg'); background-size: cover; background-attachment: fixed;">
 
 <div class="contenedor-juego1" id="app-juego">
     
@@ -111,17 +111,17 @@
         <h2 style="font-size: 2.5rem; color: #1e88e5; margin-bottom: 10px;">¡Pesca Terminada!</h2>
         <p id="mensaje-puntuacion" style="font-weight: 700; color: #6a8296; font-size: 1.2rem;"></p>
         <p id="mensaje-guardado" style="color: #4caf50; font-weight: 800; display: none;">✅ Puntaje guardado exitosamente</p>
-        <a href="index.php" class="boton-accion" style="margin-top: 20px;">Menú Principal</a>
+        <a href="../index.php" class="boton-accion" style="margin-top: 20px;">Menú Principal</a>
         <button onclick="location.reload()" class="boton-accion verde" style="border:none; cursor:pointer; margin-top: 20px;">Volver a pescar</button>
     </div>
 </div>
 
 <div style="position: fixed; bottom: -10px; left: 20px; width: 250px; z-index: 1000; pointer-events: none;">
     <video id="vid-espera" autoplay loop muted playsinline style="width: 100%; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.4)); display: block;">
-        <source src="videos/Videoespera.webm" type="video/webm">
+        <source src="../videos/Videoespera.webm" type="video/webm">
     </video>
     <video id="vid-felicitar" muted playsinline style="width: 100%; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.4)); display: none;">
-        <source src="videos/VideoFelicitar.webm" type="video/webm">
+        <source src="../videos/VideoFelicitar.webm" type="video/webm">
     </video>
 </div>
 
@@ -297,7 +297,7 @@
 <!-- MÚSICA DE FONDO -->
     <audio id="musica-juego" loop>
         <!-- Fíjate que usamos el nombre exacto de tu captura: muiscafondo.mp3 -->
-        <source src="musica/muiscafondo.mp3" type="audio/mpeg">
+        <source src="../musica/muiscafondo.mp3" type="audio/mpeg">
     </audio>
 
     <!-- SCRIPT PARA CONTROLAR LA MÚSICA -->
@@ -340,7 +340,7 @@
         <p id="texto-pausa" class="texto-advertencia">Si sales ahora, tu progreso en esta partida se perderá por completo.</p>
         <div class="modal-botones" id="botones-pausa">
             <button class="btn-no" onclick="iniciarConteoPausa()">No, seguir jugando</button>
-            <button class="btn-si" onclick="window.location.href='index.php'">Sí, salir al menú</button>
+            <button class="btn-si" onclick="window.location.href='../index.php'">Sí, salir al menú</button>
         </div>
         <div id="contador-pausa">3</div>
     </div>

@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once 'config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['id_sala_activa'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit;
 }
 
@@ -23,7 +23,7 @@ if ($sala['estado'] === 'jugando') {
 // Si la sala se cerró, lo sacamos
 if ($sala['estado'] === 'finalizada') {
     unset($_SESSION['id_sala_activa']);
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit;
 }
 ?>

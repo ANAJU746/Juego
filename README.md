@@ -15,3 +15,14 @@ Dado que el proyecto utiliza **PHP** para la lógica de los juegos y la gestión
    Descomprime el archivo ZIP y **copia la carpeta completa** dentro del directorio raíz de tu servidor local de XAMPP:
    ```text
    C:\xampp\htdocs\
+   ```
+
+3. **Iniciar la aplicación:**  
+   Inicia Apache y MySQL desde el panel de XAMPP y abre `http://localhost/Juego/` en el navegador.
+
+## Estructura del proyecto
+
+- `index.php` es la entrada principal.
+- `controladores/` contiene los controladores de autenticación, sala y juegos.
+- `config/conexion.php` configura la conexión a la base de datos.
+- `vistas/` contiene las páginas de interfaz.

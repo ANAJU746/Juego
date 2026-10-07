@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 // 1. Validar sesión
 if (!isset($_SESSION['id_usuario'])) {
