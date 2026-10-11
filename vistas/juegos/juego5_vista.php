@@ -4,58 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Torre de Conceptos - Arcade</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
-
-        body { background-image: url('../img/fondo.jpg'); background-size: cover; background-position: center; font-family: 'Nunito', sans-serif; margin: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
-
-        .contenedor-juego { 
-            background: rgba(255, 255, 255, 0.90); 
-            backdrop-filter: blur(12px); 
-            border: 2px solid #fff; 
-            padding: 20px; 
-            border-radius: 24px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
-            width: 95%; max-width: 600px; text-align: center; 
-            color: #2c3e50; 
-            z-index: 10; position: relative; display: flex; flex-direction: column; height: 85vh; 
-        }
-
-        .stats-bar { font-weight: 800; font-size: 1.1rem; display: flex; justify-content: space-between; margin-bottom: 10px; }
-        
-        .pregunta-texto { font-size: 1.4rem; color: #1e88e5; font-weight: 900; margin-bottom: 10px; min-height: 60px; }
-        .instruccion { font-size: 0.95rem; color: #6a8296; margin-bottom: 15px; font-weight: bold; }
-
-        /* AREA DE LA TORRE (Ya no tiene cursor pointer) */
-        #area-apilado { 
-            flex-grow: 1; position: relative; border-radius: 15px; 
-            background: rgba(0,0,0,0.03); 
-            border: 2px dashed #b0bec5;
-            border-bottom: 5px solid #66bb6a; 
-            overflow: hidden; 
-        }
-        
-        /* El bloque móvil ahora tiene el cursor de mano */
-        .bloque { position: absolute; width: 220px; height: 45px; display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 0.95rem; border-radius: 8px; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); padding: 0 10px; text-align: center; line-height: 1.1; user-select: none; }
-        
-        #bloque-movil { top: 20px; left: 0; z-index: 50; cursor: pointer; transition: background 0.3s; }
-        #bloque-movil:hover { filter: brightness(1.1); transform: scale(1.02); }
-        
-        #contenedor-torre { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 220px; display: flex; flex-direction: column-reverse; align-items: center; transition: bottom 0.3s; }
-        
-        .bloque-apilado { position: relative; width: 100%; height: 45px; margin-bottom: 2px; }
-        
-        .derrumbe { transform: translateY(500px) rotate(45deg); opacity: 0; transition: transform 0.5s ease-in, opacity 0.5s; }
-
-        #pantalla-final { display: none; margin-top: auto; margin-bottom: auto; }
-        .boton-accion { display: inline-block; padding: 12px 25px; background: linear-gradient(135deg, #42a5f5, #1e88e5); color: white; text-decoration: none; font-weight: bold; border-radius: 10px; font-size: 1.1rem; border:none; cursor:pointer; margin-top: 20px; box-shadow: 0 5px 15px rgba(30,136,229,0.3); }
-    </style>
+    <link rel="stylesheet" href="../css/style.css?v=<?php echo time(); ?>">
+    <script src="../js/arcade-cursor.js" defer></script>
 </head>
-<body>
+<body class="juego-5">
+    <video autoplay loop muted playsinline id="video-fondo-global">
+        <source src="../videos/FondoAnimado1.webm" type="video/webm">
+    </video>
+<div id="flash-rojo"></div>
 
 <div class="contenedor-juego">
     <div class="stats-bar" id="barra-estado">
-        <span style="color: #ef5350;" id="txt-errores">❌ Errores: 0</span>
+        <div id="contenedor-vidas">
+            <span class="corazon" id="vida-5">❤️</span>
+            <span class="corazon" id="vida-4">❤️</span>
+            <span class="corazon" id="vida-3">❤️</span>
+            <span class="corazon" id="vida-2">❤️</span>
+            <span class="corazon" id="vida-1">❤️</span>
+        </div>
         <span style="color: #66bb6a;" id="txt-ronda">Bloques: 0/5</span>
     </div>
     
@@ -91,16 +57,21 @@
 </div>
 
 <script>
-    const datosJuego = <?php echo json_encode($preguntas); ?>;
+    const datosJuego = <?php echo json_encode($preguntas, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     let rondaActual = 0;
     let errores = 0;
+    let vidas = 5;
+    let juegoFinalizado = false;
+    let sinVidas = false;
+    let contextoAudioError;
+    let timeoutFlashRojo;
     
     let opcionesActuales = [];
     let indiceOpcion = 0;
     let moviendo = false;
     let x = 0;
     let direccion = 1;
-    let velocidad = 0.6; 
+    let velocidad = 1.5;
     let animacionFrame;
     
     const bloqueMovil = document.getElementById('bloque-movil');
@@ -134,7 +105,7 @@
     }
 
     function moverBloque() {
-        if(!moviendo) return;
+        if(!moviendo || juegoFinalizado || sinVidas) return;
         
         let limiteMaximo = areaApilado.clientWidth - bloqueMovil.clientWidth;
         x += velocidad * direccion;
@@ -173,6 +144,7 @@
             let respuestaCorrecta = datosJuego[rondaActual].correcta;
 
             if (textoSeleccionado === respuestaCorrecta) {
+                lanzarAcierto();
                 // APILAR CORRECTAMENTE
                 let nuevoBloque = document.createElement('div');
                 nuevoBloque.className = 'bloque bloque-apilado';
@@ -184,8 +156,8 @@
                 setTimeout(iniciarRonda, 300); // Pausa breve y lanza el siguiente
             } else {
                 // ERROR: LA TORRE SE CAE
-                errores++;
-                document.getElementById('txt-errores').innerText = `❌ Errores: ${errores}`;
+                restarVida();
+                if (sinVidas) return;
                 
                 // Efecto visual a los bloques para que salgan volando
                 let bloques = contenedorTorre.querySelectorAll('.bloque-apilado');
@@ -204,22 +176,87 @@
         };
     }
 
+    function reproducirSonidoError() {
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) throw new Error('Web Audio API no está disponible.');
+            contextoAudioError = contextoAudioError || new AudioContextClass();
+            if (contextoAudioError.state === 'suspended') contextoAudioError.resume();
+
+            const oscilador = contextoAudioError.createOscillator();
+            const ganancia = contextoAudioError.createGain();
+            oscilador.connect(ganancia);
+            ganancia.connect(contextoAudioError.destination);
+            oscilador.type = 'sawtooth';
+            oscilador.frequency.setValueAtTime(150, contextoAudioError.currentTime);
+            oscilador.frequency.exponentialRampToValueAtTime(40, contextoAudioError.currentTime + 0.3);
+            ganancia.gain.setValueAtTime(0.3, contextoAudioError.currentTime);
+            ganancia.gain.exponentialRampToValueAtTime(0.01, contextoAudioError.currentTime + 0.3);
+            oscilador.start();
+            oscilador.stop(contextoAudioError.currentTime + 0.3);
+        } catch (error) {
+            console.error('No se pudo reproducir el sonido de error:', error);
+        }
+    }
+
+    function restarVida() {
+        if (vidas <= 0 || juegoFinalizado || sinVidas) return false;
+
+        errores++;
+        lanzarError();
+
+        document.getElementById(`vida-${vidas}`).classList.add('corazon-perdido');
+        vidas--;
+        if (vidas === 0) {
+            sinVidas = true;
+            moviendo = false;
+            cancelAnimationFrame(animacionFrame);
+            setTimeout(terminarJuego, 600);
+            return false;
+        }
+        return true;
+    }
+
     function terminarJuego() {
+        if (juegoFinalizado) return;
+        juegoFinalizado = true;
         document.getElementById('zona-activa').style.display = 'none';
         document.getElementById('barra-estado').style.display = 'none';
         document.getElementById('pantalla-final').style.display = 'block';
 
-        document.getElementById('mensaje-puntuacion').innerText = `Construiste la torre con ${errores} caídas.`;
-        document.getElementById('vid-espera').style.display = 'none';
-        const vidFelicitar = document.getElementById('vid-felicitar');
-        vidFelicitar.style.display = 'block';
-        vidFelicitar.play().catch(error => console.error('No se pudo reproducir el video de felicitación:', error));
+        const mensajePuntuacion = document.getElementById('mensaje-puntuacion');
+        if (sinVidas) {
+            document.querySelector('#pantalla-final h2').innerText = '¡Torre Derrumbada!';
+            mensajePuntuacion.innerText = `¡Te quedaste sin vidas! Tuviste ${errores} errores.`;
+            mensajePuntuacion.style.color = '#ef5350';
+        } else {
+            mensajePuntuacion.innerText = `Construiste la torre con ${errores} caídas.`;
+        }
+        if (!sinVidas) {
+            document.getElementById('vid-espera').style.display = 'none';
+            const vidFelicitar = document.getElementById('vid-felicitar');
+            vidFelicitar.style.display = 'block';
+            vidFelicitar.play().catch(error => console.error('No se pudo reproducir el video de felicitación:', error));
+        }
         
         let formData = new FormData();
         formData.append('guardar_puntaje', '1');
         formData.append('errores', errores);
         fetch(window.location.href, { method: 'POST', body: formData })
-        .then(r => r.json()).then(d => { if(d.status==='success') document.getElementById('mensaje-guardado').style.display = 'block'; });
+        .then(r => r.json()).then(d => {
+            if (d.status !== 'success') throw new Error(d.message || 'No se pudo guardar el puntaje.');
+            if (d.proximo_juego) {
+                mensajePuntuacion.innerText += ' ¡Siguiente juego en 3 segundos!';
+                setTimeout(() => window.location.replace(`juego${d.proximo_juego}.php?fiesta=1`), 3000);
+                return;
+            }
+            if (d.fiesta_completada) {
+                mensajePuntuacion.innerText += ' ¡Completaste la Fiesta!';
+                setTimeout(() => window.location.replace('lobby.php'), 4000);
+                return;
+            }
+            document.getElementById('mensaje-guardado').style.display = 'block';
+        }).catch(error => console.error('No se pudo guardar el puntaje:', error));
     }
 
     iniciarRonda();
@@ -239,20 +276,6 @@
         }, { once: true });
     });
 </script>
-<style>
-    .btn-salir-juego { position: fixed; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); color: #ef5350; border: 2px solid #ef5350; padding: 10px 20px; border-radius: 15px; font-weight: 900; font-family: 'Nunito', sans-serif; font-size: 1.1rem; cursor: pointer; z-index: 9000; box-shadow: 0 5px 15px rgba(239, 83, 80, 0.15); transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-    .btn-salir-juego:hover { background: #ef5350; color: white; transform: scale(1.05); }
-    .modal-pausa { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(200, 220, 240, 0.5); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 10000; font-family: 'Nunito', sans-serif; text-align: center; }
-    .modal-contenido-pausa { background: rgba(255, 255, 255, 0.95); padding: 40px 50px; border-radius: 24px; border: 2px solid #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.15); max-width: 450px; width: 90%; }
-    .modal-contenido-pausa h2 { font-size: 2rem; color: #ef5350; margin-top: 0; font-weight: 900; }
-    .texto-advertencia { font-size: 1.1rem; color: #6a8296; font-weight: 700; }
-    .modal-botones { margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
-    .modal-botones button { padding: 12px 25px; border: none; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; font-family: 'Nunito', sans-serif; }
-    .modal-botones button:hover { transform: translateY(-3px); }
-    .btn-si { background: #ffebee; color: #d32f2f; border: 2px solid #ffcdd2; box-shadow: 0 5px 15px rgba(211, 47, 47, 0.1); }
-    .btn-no { background: linear-gradient(135deg, #42a5f5, #1e88e5); color: white; box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3); }
-    #contador-pausa { font-size: 6rem; font-weight: 900; color: #66bb6a; display: none; margin: 20px 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
-</style>
 <button class="btn-salir-juego" onclick="mostrarModalPausa()">✖ Abandonar</button>
 <div id="modal-pausa" class="modal-pausa">
     <div class="modal-contenido-pausa">
@@ -268,9 +291,11 @@
 <script>
     let velOriginalPausa = null;
     let generadorPausado = false;
-    let intervaloConteoPausa;
+    let intervaloConteoPausa = null;
     function mostrarModalPausa() {
         clearInterval(intervaloConteoPausa);
+        intervaloConteoPausa = null;
+        document.getElementById('contador-pausa').classList.remove('alerta-dramatica');
         document.getElementById('modal-pausa').style.display = 'flex';
         document.getElementById('botones-pausa').style.display = 'flex';
         document.getElementById('texto-pausa').style.display = 'block';
@@ -284,6 +309,7 @@
         if (musica) musica.pause();
     }
     function iniciarConteoPausa() {
+        if (intervaloConteoPausa !== null) return;
         document.getElementById('botones-pausa').style.display = 'none';
         document.getElementById('texto-pausa').style.display = 'none';
         document.getElementById('titulo-pausa').innerText = 'Reanudando partida en...';
@@ -293,16 +319,33 @@
         let conteo = 3;
         contadorEl.innerText = conteo;
         contadorEl.style.color = '#66bb6a';
+        contadorEl.classList.add('alerta-dramatica');
+        try {
+            if (typeof reproducirTick === 'function') reproducirTick();
+        } catch (error) {
+            console.error('No se pudo reproducir el tic del conteo:', error);
+        }
+
         clearInterval(intervaloConteoPausa);
         intervaloConteoPausa = setInterval(() => {
             conteo--;
             if (conteo > 0) {
+                try {
+                    if (typeof reproducirTick === 'function') reproducirTick();
+                } catch (error) {
+                    console.error('No se pudo reproducir el tic del conteo:', error);
+                }
+                contadorEl.style.animation = 'none';
+                void contadorEl.offsetHeight;
+                contadorEl.style.animation = '';
                 contadorEl.innerText = conteo;
                 if (conteo === 2) contadorEl.style.color = '#ffca28';
                 if (conteo === 1) contadorEl.style.color = '#ef5350';
                 return;
             }
             clearInterval(intervaloConteoPausa);
+            intervaloConteoPausa = null;
+            contadorEl.classList.remove('alerta-dramatica');
             document.getElementById('modal-pausa').style.display = 'none';
             if (velOriginalPausa !== null) { velocidad = velOriginalPausa; velOriginalPausa = null; }
             if (typeof generadorGlobos !== 'undefined' && generadorPausado) {
@@ -318,6 +361,90 @@
             const musica = document.getElementById('musica-juego');
             if (musica) musica.play().catch(error => console.error('No se pudo reanudar la música:', error));
         }, 1000);
+    }
+</script>
+<!-- SISTEMA UNIVERSAL DE FEEDBACK -->
+<div id="flash-feedback"></div>
+<div id="contenedor-particulas"></div>
+<script>
+    let timeoutFeedbackFlash;
+    function reproducirSonidoAcierto() {
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) throw new Error('Web Audio API no está disponible.');
+            contextoAudioError = contextoAudioError || new AudioContextClass();
+            if (contextoAudioError.state === 'suspended') contextoAudioError.resume();
+            const oscilador = contextoAudioError.createOscillator();
+            const ganancia = contextoAudioError.createGain();
+            oscilador.connect(ganancia);
+            ganancia.connect(contextoAudioError.destination);
+            oscilador.type = 'sine';
+            oscilador.frequency.setValueAtTime(600, contextoAudioError.currentTime);
+            oscilador.frequency.exponentialRampToValueAtTime(1200, contextoAudioError.currentTime + 0.1);
+            ganancia.gain.setValueAtTime(0, contextoAudioError.currentTime);
+            ganancia.gain.linearRampToValueAtTime(0.3, contextoAudioError.currentTime + 0.05);
+            ganancia.gain.exponentialRampToValueAtTime(0.01, contextoAudioError.currentTime + 0.4);
+            oscilador.start();
+            oscilador.stop(contextoAudioError.currentTime + 0.4);
+        } catch (error) {
+            console.error('No se pudo reproducir el sonido de acierto:', error);
+        }
+    }
+    function reproducirTick() {
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) throw new Error('Web Audio API no está disponible.');
+            contextoAudioError = contextoAudioError || new AudioContextClass();
+            if (contextoAudioError.state === 'suspended') contextoAudioError.resume();
+            const oscilador = contextoAudioError.createOscillator();
+            const ganancia = contextoAudioError.createGain();
+            oscilador.connect(ganancia);
+            ganancia.connect(contextoAudioError.destination);
+            oscilador.type = 'triangle';
+            oscilador.frequency.setValueAtTime(1000, contextoAudioError.currentTime);
+            oscilador.frequency.exponentialRampToValueAtTime(100, contextoAudioError.currentTime + 0.1);
+            ganancia.gain.setValueAtTime(0.6, contextoAudioError.currentTime);
+            ganancia.gain.exponentialRampToValueAtTime(0.01, contextoAudioError.currentTime + 0.1);
+            oscilador.start(contextoAudioError.currentTime);
+            oscilador.stop(contextoAudioError.currentTime + 0.1);
+        } catch (error) {
+            console.error('No se pudo reproducir el tic del temporizador:', error);
+        }
+    }
+    function mostrarFlashFeedback(colorRGBA) {
+        const flash = document.getElementById('flash-feedback');
+        flash.style.background = colorRGBA;
+        flash.style.opacity = '1';
+        clearTimeout(timeoutFeedbackFlash);
+        timeoutFeedbackFlash = setTimeout(() => { flash.style.opacity = '0'; }, 300);
+    }
+    function generarParticulas(arraySimbolos, cantidad) {
+        const contenedor = document.getElementById('contenedor-particulas');
+        for (let i = 0; i < cantidad; i++) {
+            const particula = document.createElement('div');
+            particula.className = 'particula-feedback';
+            particula.innerText = arraySimbolos[Math.floor(Math.random() * arraySimbolos.length)];
+            particula.style.left = (Math.random() * 80 + 10) + 'vw';
+            particula.style.top = (Math.random() * 80 + 10) + 'vh';
+            const escalaAleatoria = Math.random() * 0.5 + 0.8;
+            particula.style.fontSize = `${3.5 * escalaAleatoria}rem`;
+            particula.style.animationDelay = (Math.random() * 0.2) + 's';
+            contenedor.appendChild(particula);
+            setTimeout(() => particula.remove(), 1500);
+        }
+    }
+    function lanzarAcierto() {
+        reproducirSonidoAcierto();
+        mostrarFlashFeedback('rgba(102, 187, 106, 0.25)');
+        generarParticulas(['✅', '✨', '⭐', '🎉'], 5);
+    }
+    function lanzarError() {
+        reproducirSonidoError();
+        mostrarFlashFeedback('rgba(239, 83, 80, 0.25)');
+        generarParticulas(['❌', '⚠️', '❗', '💥'], 4);
+        document.body.classList.remove('feedback-sacudida');
+        void document.body.offsetWidth;
+        document.body.classList.add('feedback-sacudida');
     }
 </script>
 </body>

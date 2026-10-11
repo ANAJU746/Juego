@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/../config/preguntas_juego.php';
+require_once __DIR__ . '/../config/fiesta.php';
 
 // --- RECEPTOR OCULTO PARA GUARDAR EL PUNTAJE ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_puntaje'])) {
@@ -22,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_puntaje'])) {
                 ':errores' => $errores,
                 ':sala' => $id_sala
             ]);
-            echo json_encode(["status" => "success"]);
+            echo json_encode(array_merge(["status" => "success"], avanzarFiestaJugador($conexion, 1)));
         } catch (PDOException $e) {
             echo json_encode(["status" => "error", "message" => $e->getMessage()]);
         }
@@ -31,24 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_puntaje'])) {
 }
 // ------------------------------------------------------
 
-// --- OBTENER PREGUNTAS DESDE LA BASE DE DATOS ---
-$stmt =$conexion->prepare("
-    SELECT texto_pregunta, respuesta_correcta, opcion_falsa_1, opcion_falsa_2 
-    FROM preguntas 
-    WHERE id_categoria = 1 
-    ORDER BY RAND() 
-    LIMIT 5
-");
-$stmt->execute();
-$resultados_bd =$stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$preguntas = [];
-foreach ($resultados_bd as $fila) {$preguntas[] = [
-        "pregunta" => $fila['texto_pregunta'],
-        "correcta" => $fila['respuesta_correcta'],
-        "falsas" => [$fila['opcion_falsa_1'],$fila['opcion_falsa_2']]
-    ];
-}
+// Carga las preguntas propias de la sala si existen; la práctica usa el banco general.
+$idSalaPreguntas = isset($_SESSION['id_sala_activa']) ? (int) $_SESSION['id_sala_activa'] : null;
+$preguntas = obtenerPreguntasJuego($conexion, 1, $idSalaPreguntas);
 
 if (empty($preguntas)) {
     die("<h2 style='text-align:center; padding:50px; font-family:sans-serif; color:#ef5350;'>Error: No hay preguntas de categoría 1 en la base de datos. Asegúrate de insertarlas en HeidiSQL.</h2>");

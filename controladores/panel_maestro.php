@@ -9,9 +9,12 @@ if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'maestro') {
 }
 
 $id_maestro = $_SESSION['id_usuario'];
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
 // 1. Buscar si el maestro ya tiene una sala activa
-$stmt = $conexion->prepare("SELECT * FROM salas WHERE id_maestro = :id AND estado != 'finalizada'");
+$stmt = $conexion->prepare("SELECT * FROM salas WHERE id_maestro = :id AND estado != 'finalizada' ORDER BY id_sala DESC LIMIT 1");
 $stmt->execute([':id' => $id_maestro]);
 $sala_activa = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -27,9 +30,16 @@ if (!$sala_activa) {
 
 // --- ACCIONES DEL MAESTRO ---
 
-// A) Lanzar un juego específico a las pantallas de los alumnos
-if (isset($_POST['lanzar_juego'])) {
-    $id_juego = $_POST['id_juego'];
+// A) Lanzar un juego específico o iniciar la secuencia Fiesta (juegos 1 a 5).
+if (isset($_POST['lanzar_fiesta']) || isset($_POST['lanzar_juego'])) {
+    $juegoElegido = $_POST['id_juego'] ?? '';
+    $iniciarFiesta = isset($_POST['lanzar_fiesta']) || $juegoElegido === 'fiesta';
+    $id_juego = $iniciarFiesta ? 6 : filter_var($juegoElegido, FILTER_VALIDATE_INT);
+    if (!$iniciarFiesta && ($id_juego === false || $id_juego < 1 || $id_juego > 5)) {
+        $_SESSION['mensaje_panel'] = ['tipo' => 'error', 'texto' => 'Selecciona un juego válido para iniciar.'];
+        header("Location: panel_maestro.php");
+        exit;
+    }
     $stmt_update = $conexion->prepare("UPDATE salas SET estado = 'jugando', id_categoria = :juego WHERE id_sala = :sala");
     $stmt_update->execute([':juego' => $id_juego, ':sala' => $sala_activa['id_sala']]);
     header("Location: panel_maestro.php");
@@ -68,6 +78,11 @@ if (isset($_GET['api']) && $_GET['api'] == 'ranking') {
     echo json_encode($ranking);
     exit;
 }
+
+// Mensajes de una sola visita, por ejemplo el resultado de generar preguntas.
+$mensaje_panel = $_SESSION['mensaje_panel'] ?? null;
+unset($_SESSION['mensaje_panel']);
+$temario_ia_ultimo = $_SESSION['temario_ia_ultimo'] ?? '';
 
 // Si no es petición API, cargamos la Vista normal
 require_once __DIR__ . '/../vistas/paneles/panel_maestro_vista.php';

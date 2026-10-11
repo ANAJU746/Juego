@@ -15,11 +15,12 @@ CREATE TABLE IF NOT EXISTS `categorias_juego` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `categorias_juego` (`id_categoria`, `nombre_juego`) VALUES
-(1, 'Caza Conceptos'),
-(2, 'Tiro al Blanco'),
+(1, 'Pesca Técnica'),
+(2, 'Caza Conceptos'),
 (3, 'Tiro al Blanco'),
 (4, 'Atrapar Globos'),
-(5, 'Torre de Conceptos');
+(5, 'Torre de Conceptos')
+ON DUPLICATE KEY UPDATE `nombre_juego` = VALUES(`nombre_juego`);
 
 -- =======================================================================
 -- 2. TABLA: usuarios
@@ -60,6 +61,19 @@ CREATE TABLE IF NOT EXISTS `salas` (
   UNIQUE KEY `codigo_sala` (`codigo_sala`),
   KEY `id_maestro` (`id_maestro`),
   CONSTRAINT `salas_ibfk_1` FOREIGN KEY (`id_maestro`) REFERENCES `usuarios` (`id_usuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Preguntas generadas para una sala sin modificar el banco global
+CREATE TABLE IF NOT EXISTS `preguntas_sala` (
+  `id_pregunta` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_sala` INT(11) NOT NULL,
+  `texto_pregunta` VARCHAR(255) NOT NULL,
+  `respuesta_correcta` VARCHAR(100) NOT NULL,
+  `opcion_falsa_1` VARCHAR(100) NOT NULL,
+  `opcion_falsa_2` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id_pregunta`),
+  KEY `idx_preguntas_sala` (`id_sala`),
+  CONSTRAINT `fk_preguntas_sala_sala` FOREIGN KEY (`id_sala`) REFERENCES `salas` (`id_sala`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `salas` (`id_sala`, `id_maestro`, `codigo_sala`, `estado`, `fecha_creacion`, `id_categoria`) VALUES
@@ -140,3 +154,14 @@ INSERT INTO `historial_partidas` (`id_partida`, `id_usuario`, `id_categoria`, `p
 -- FINALIZACIÓN
 -- =======================================================================
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+-- Corregir los nombres de las categorías de juegos
+INSERT INTO `categorias_juego` (`id_categoria`, `nombre_juego`) VALUES
+    (1, 'Pesca Técnica'),
+    (2, 'Caza Conceptos'),
+    (3, 'Tiro al Blanco'),
+    (4, 'Atrapar Globos'),
+    (5, 'Torre de Conceptos')
+ON DUPLICATE KEY UPDATE
+    `nombre_juego` = VALUES(`nombre_juego`);

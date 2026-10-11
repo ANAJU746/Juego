@@ -8,18 +8,33 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
         
         * { box-sizing: border-box; }
-        body { 
-            background-image: url('../img/fondo2.jpg'); 
-            background-size: cover; 
-            background-position: center; 
-            background-attachment: fixed; 
+        body {
+            background-color: #85c1e9;
             font-family: 'Nunito', sans-serif; 
             margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
             min-height: 100vh; 
-            overflow: hidden; 
+            overflow-x: hidden;
+            isolation: isolate;
+        }
+        #video-fondo-global {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        .mascota-bienvenida-video {
+            width: 100%;
+            display: block;
+            background: transparent;
+            mix-blend-mode: multiply;
+            filter: contrast(1.15) brightness(1.08) drop-shadow(0 15px 20px rgba(0,0,0,0.35));
         }
 
         /* --- FONDO ANIMADO DE CÓDIGO --- */
@@ -43,6 +58,36 @@
         }
 
         .contenedor-login h2 { color: #1e88e5; font-size: 2rem; font-weight: 900; margin-top: 0; margin-bottom: 20px; }
+
+        .bienvenida-arcade {
+            width: 100%;
+            min-height: 92px;
+            padding: 14px 24px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.9);
+            background: linear-gradient(135deg, rgba(227, 242, 253, 0.94), rgba(243, 229, 245, 0.94));
+            box-shadow: 0 8px 20px rgba(30, 136, 229, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        .bienvenida-arcade h1 {
+            margin: 0;
+            color: #1565c0;
+            font-size: 1.55rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+        }
+        .bienvenida-arcade p {
+            margin: 0;
+            color: #6a1b9a;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        @media (max-width: 480px) {
+            .bienvenida-arcade { min-height: 78px; padding: 12px 16px; }
+            .bienvenida-arcade h1 { font-size: 1.3rem; }
+        }
         
         .grupo-input { margin-bottom: 20px; text-align: left; }
         .grupo-input label { display: block; font-weight: 800; color: #6a8296; margin-bottom: 8px; font-size: 0.95rem; }
@@ -70,10 +115,18 @@
     </style>
 </head>
 <body>
+    <video autoplay loop muted playsinline id="video-fondo-global" aria-hidden="true">
+        <source src="../videos/FondoAnimado2.webm" type="video/webm">
+    </video>
     <!-- Contenedor para la animación de código -->
     <div id="fondo-codigo"></div>
 
-    <div class="contenedor-login">
+    <header class="bienvenida-arcade">
+        <h1>Arcade Jaguar</h1>
+        <p>¡Bienvenido!</p>
+    </header>
+
+    <div class="contenedor-login" style="margin: auto;">
         <h2>Crear Cuenta 🚀</h2>
         
         <?php if (!empty($mensaje)): ?>
@@ -115,8 +168,8 @@
 
     <!-- VIDEO DE LA MASCOTA DE BIENVENIDA A LA DERECHA -->
     <div style="position: fixed; bottom: -10px; right: 20px; width: 280px; z-index: 1000; pointer-events: none;">
-        <video autoplay loop muted playsinline style="width: 100%; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.5)); display: block;">
-            <source src="../videos/videoespera.webm" type="video/webm">
+        <video autoplay loop muted playsinline class="mascota-bienvenida-video">
+            <source src="../videos/bienvenida.webm" type="video/webm">
         </video>
     </div>
 
