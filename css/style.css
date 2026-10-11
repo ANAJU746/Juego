@@ -1482,8 +1482,11 @@ body.juego-4 {
     display: flex;
     justify-content: center;
     align-items: center;
+    white-space: normal !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     text-align: center;
-    padding: 15px;
+    padding: 10px;
     font-weight: 800;
     font-size: 0.9rem;
     color: white;

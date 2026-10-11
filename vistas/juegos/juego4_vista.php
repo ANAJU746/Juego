@@ -6,6 +6,33 @@
     <title>Atrapar Globos - Arcade</title>
     <link rel="stylesheet" href="../css/style.css?v=<?php echo time(); ?>">
     <script src="../js/arcade-cursor.js" defer></script>
+<style>
+    /* 1. Hacemos que el gran cuadro blanco se encoja para solo envolver la pregunta */
+    .juego-4 .contenedor-juego {
+        height: auto !important;
+        min-height: min-content !important;
+        margin-top: 2vh !important;
+        padding-bottom: 25px !important;
+        z-index: 100; /* Lo mantenemos siempre al frente */
+    }
+
+    /* 2. Aseguramos que el "cielo" donde salen los globos ocupe toda la pantalla real */
+    #cielo-globos {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 50; /* Por debajo del cuadro de la pregunta */
+        pointer-events: none; /* Para no bloquear clics en la pantalla */
+    }
+
+    /* 3. Nos aseguramos de que los globos sí se puedan reventar (hacer clic) */
+    .globo {
+        pointer-events: auto !important;
+        z-index: 60;
+    }
+</style>
 </head>
 <body class="juego-4">
     <video autoplay loop muted playsinline id="video-fondo-global">
